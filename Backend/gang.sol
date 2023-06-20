@@ -4,9 +4,11 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract NFT is ERC721, Ownable {
     using Strings for uint256;
+    using Counters for Counters.Counter;
 
     uint public constant MAX_TOKENS = 32;
     uint private constant TOKENS_RESERVED = 0;
@@ -17,11 +19,10 @@ contract NFT is ERC721, Ownable {
     uint256 public totalSupply;
     mapping(address => uint256) private mintedPerWallet;
 
-    string public baseUri;
+    string public baseUri = "ipfs://bafybeiefb7s245y7wrtxkfg323xreayjxkplzgxq3kzwo6bu25eqlycciq/";
     string public baseExtension = ".json";
 
     constructor() ERC721("Gang", "GNG") {
-        baseUri = "ipfs://bafybeiefb7s245y7wrtxkfg323xreayjxkplzgxq3kzwo6bu25eqlycciq/";
         for (uint256 i = 1; i <= TOKENS_RESERVED; ++i) {
             _safeMint(msg.sender, i);
         }
