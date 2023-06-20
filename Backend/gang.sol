@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract NFT is ERC721, Ownable {
     using Strings for uint256;
-    using Counters for Counters.Counter;
 
     uint public constant MAX_TOKENS = 32;
     uint private constant TOKENS_RESERVED = 0;
@@ -52,6 +51,11 @@ contract NFT is ERC721, Ownable {
         }
         mintedPerWallet[msg.sender] += _numTokens;
         totalSupply += _numTokens;
+    }
+
+    // To get the amount minted for the wallet address
+    function getMintedCount(address walletAddress) public view returns (uint256) {
+        return mintedPerWallet[walletAddress];
     }
 
     // Owner-only functions
