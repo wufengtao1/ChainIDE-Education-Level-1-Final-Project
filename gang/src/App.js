@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 
 // Ethereum - Sepolia Test Net
 // Smart contract address and ABI
-const contractAddress = '0xd5052715423788bE73C61096cc0e504440cE219c';
+const contractAddress = '0xA420Db6Af13FB8f67F5548f3a2910c08C7e863eD';
 const contractABI = [{ "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "approved", "type": "address" }, { "indexed": true, "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "operator", "type": "address" }, { "indexed": false, "internalType": "bool", "name": "approved", "type": "bool" }], "name": "ApprovalForAll", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "to", "type": "address" }, { "indexed": true, "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "inputs": [], "name": "MAX_MINT_PER_TX", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "MAX_TOKENS", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "approve", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }], "name": "balanceOf", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "baseExtension", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "baseUri", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "flipSaleState", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "getApproved", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "walletAddress", "type": "address" }], "name": "getMintedCount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "address", "name": "operator", "type": "address" }], "name": "isApprovedForAll", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "isSaleActive", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_numTokens", "type": "uint256" }], "name": "mint", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [], "name": "name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "ownerOf", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "price", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "from", "type": "address" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "safeTransferFrom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "from", "type": "address" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }, { "internalType": "bytes", "name": "data", "type": "bytes" }], "name": "safeTransferFrom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "operator", "type": "address" }, { "internalType": "bool", "name": "approved", "type": "bool" }], "name": "setApprovalForAll", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "string", "name": "_baseUri", "type": "string" }], "name": "setBaseUri", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_price", "type": "uint256" }], "name": "setPrice", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "bytes4", "name": "interfaceId", "type": "bytes4" }], "name": "supportsInterface", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "tokenURI", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalSupply", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "from", "type": "address" }, { "internalType": "address", "name": "to", "type": "address" }, { "internalType": "uint256", "name": "tokenId", "type": "uint256" }], "name": "transferFrom", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "withdrawAll", "outputs": [], "stateMutability": "payable", "type": "function" }];
 
 const NFT = () => {
@@ -43,7 +43,7 @@ const NFT = () => {
     // Connect to MetaMask on component mount
     useEffect(() => {
         const connectToMetaMask = async () => {
-            if (wallet) {
+            if (wallet?.length) {
                 try {
                     const provider = new ethers.providers.Web3Provider(window.ethereum);
                     const signer = provider.getSigner();
@@ -65,24 +65,48 @@ const NFT = () => {
 
     // Set Wallet Accounts using windows.ethereum
     useEffect(() => {
-        if (window.ethereum) {
-            try {
-                window.ethereum.request({ method: 'eth_requestAccounts' }).then((accs) => setWallet(accs));
-            } catch (e) {
-                console.log("Error fetching accounts");
+        const ethereum = window.ethereum;
+        try {
+
+            if (ethereum) {
+                ethereum
+                    .request({ method: 'eth_chainId' })
+                    .then((chainId) => {
+                        if (chainId !== '0x61') {
+                            alert('Please switch to Binance Smart Chain Testnet (BNB)');
+                        } else {
+                            try {
+                                window.ethereum.request({ method: 'eth_requestAccounts' }).then((accs) => setWallet(accs));
+                            } catch (e) {
+                                console.log("Error fetching accounts");
+                            }
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error while checking blockchain:', error);
+                    });
+            } else {
+                alert('Please install MetaMask extension to use this feature.');
             }
+        } catch (e) {
+
         }
+
     }, [window.ethereum]);
 
     const handleCalculateTotal = async () => {
-        if (contract) {
-            const mintedPerWallet = await contract.getMintedCount(
-                window.ethereum.selectedAddress
-            );
-            const remainingMint = maxMintPerTx - mintedPerWallet;
-            setRemainingPerAccount(remainingMint);
-            const numTokens = Math.min(remainingMint, numTokensToMint);
-            setTotalCost(ethers.utils.formatEther(numTokens * priceValue));
+        try{
+            if (contract) {
+                const mintedPerWallet = await contract.getMintedCount(
+                    window.ethereum.selectedAddress
+                );
+                const remainingMint = maxMintPerTx - mintedPerWallet;
+                setRemainingPerAccount(remainingMint);
+                const numTokens = Math.min(remainingMint, numTokensToMint);
+                setTotalCost(ethers.utils.formatEther(numTokens * priceValue));
+            }
+        }catch(e){
+            console.log("Error in handleCalculateTotal", e);
         }
     }
 
@@ -197,7 +221,7 @@ const NFT = () => {
 
                                     <button
                                         className="w-14 h-10 md:w-16 md:h-12 flex items-center justify-center text-brand-background hover:shadow-lg hover:bg-gray-100 bg-gray-300 font-bold rounded-md"
-                                        onClick={() => setNumTokensToMint(Math.max(1, numTokensToMint - 1))}
+                                        onClick={() => setNumTokensToMint(Math.max(0, numTokensToMint - 1))}
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -235,16 +259,16 @@ const NFT = () => {
                                 </div>
 
                                 {/* Mint Button && Connect Wallet Button */}
-                                {wallet &&  <button
-                                        className={` ${!isSaleActive
-                                            ? 'bg-pink-500 cursor-not-allowed'
-                                            : 'bg-pink-500 duration-150 from-brand-purple to-brand-pink shadow-lg hover:shadow-pink-400/20 hover:bg-pink-700'
-                                            } font-coiny mt-12 w-full px-6 py-3 rounded-md text-2xl text-white  mx-4 tracking-wide uppercase`}
-                                        disabled={!isSaleActive}
-                                        onClick={() => { handleMintTokens() }}
-                                    >
-                                        Mint
-                                    </button>}
+                                {wallet && <button
+                                    className={` ${!isSaleActive
+                                        ? 'bg-pink-500 cursor-not-allowed'
+                                        : 'bg-pink-500 duration-150 from-brand-purple to-brand-pink shadow-lg hover:shadow-pink-400/20 hover:bg-pink-700'
+                                        } font-coiny mt-12 w-full px-6 py-3 rounded-md text-2xl text-white  mx-4 tracking-wide uppercase`}
+                                    disabled={!isSaleActive}
+                                    onClick={() => { handleMintTokens() }}
+                                >
+                                    Mint
+                                </button>}
                             </div>
 
 
