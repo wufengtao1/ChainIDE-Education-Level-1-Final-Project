@@ -1,21 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Coiny&family=Open+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: 'Featuristic';
-  src: local('fonts/Featuristic-owna0.ttf'), url(./fonts/Featuristic-owna0.ttf) format('truetype');
-  /* other formats include: 'woff2', 'truetype, 'opentype',
-                            'embedded-opentype', and 'svg' */
-}
-
 :root {
-  --font-family: 'Open Sans', sans-serif;
+  --font-family: 'Do Hyeon', sans-serif;
   --clr-light: #f0e9e9;
   --clr-purple: #9b5de5;
   --clr-pink: #f15bb5;
+  --clr-red: #F85D3B;
   --clr-yellow: #fee440;
   --clr-blue: #00bbf9;
   --clr-green: #00f5d4;
@@ -69,9 +63,38 @@ html {
   scroll-behavior: smooth;
   font-family: var(--font-family);
   background: var(--clr-background);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.66) 0%, rgba(0, 0, 0, 0.26) 100%);
+  background-blend-mode: normal, multiply, normal, normal;background-blend-mode: normal, multiply, normal, normal;
 }
 
 ::selection {
   background: var(--clr-selection-bg);
   color: var(--clr-selection-text);
 }
+
+.gradient-box {
+  display: flex;
+  align-items: center;
+  margin: auto;
+  max-width: 22em;
+  position: relative;
+  box-sizing: border-box;
+  color: #fff;
+  background: #000;
+  background-clip: padding-box;
+  border: solid 5px transparent;
+  border-radius: 5px;
+}
+.gradient-box:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  margin: -2px;
+  border-radius: inherit;
+  background: linear-gradient(to right, #FFBD5A, #F8613F);
+}
+

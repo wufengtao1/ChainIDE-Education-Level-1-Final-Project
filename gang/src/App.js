@@ -105,7 +105,7 @@ const NFT = () => {
      * Calculation of total price
      */
     const handleCalculateTotal = async () => {
-        try{
+        try {
             if (contract) {
                 const mintedPerWallet = await contract.getMintedCount(
                     window.ethereum.selectedAddress
@@ -115,7 +115,7 @@ const NFT = () => {
                 const numTokens = Math.min(remainingMint, numTokensToMint);
                 setTotalCost(ethers.utils.formatEther(numTokens * priceValue));
             }
-        }catch(e){
+        } catch (e) {
             console.log("Error in handleCalculateTotal", e);
         }
     }
@@ -155,139 +155,146 @@ const NFT = () => {
     };
 
     return (
-        <div className="min-h-screen h-full w-full overflow-hidden flex flex-col items-center justify-center bg-brand-background font-sans text-xl text-white duration-150" style={{ fontFamily: "Featuristic" }}>
+        <div className="min-h-screen h-full w-full overflow-hidden flex flex-col items-center justify-center background-image font-sans text-xl text-white duration-150" style={{ fontFamily: "Do Hyeon" }}>
+            <img
+                src="/images/BG_IMAGE.png"
+                className="animate-pulse-slow absolute inset-auto block w-full min-h-screen object-cover"
+            />
             <div className="flex justify-between w-11/12 z-10 absolute top-10">
                 <span className="text-xl duration-200 hover:text-slate-300">
                     <a href="#">
                         ABOUT
                     </a>
                 </span>
-                <span className="text-2xl underline underline-offset-8">
-                    😈 GANG NFT
+                <span className="text-2xl flex">
+                    <img src="/images/LOGO_ICON.png" width="30" height="30" alt="GangClub-logo" />
+                    GangClub
                 </span>
                 <div className="flex justify-between">
                     <a href="#">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px" fill="white">    <path d="M22,3.999c-0.78,0.463-2.345,1.094-3.265,1.276c-0.027,0.007-0.049,0.016-0.075,0.023c-0.813-0.802-1.927-1.299-3.16-1.299 c-2.485,0-4.5,2.015-4.5,4.5c0,0.131-0.011,0.372,0,0.5c-3.353,0-5.905-1.756-7.735-4c-0.199,0.5-0.286,1.29-0.286,2.032 c0,1.401,1.095,2.777,2.8,3.63c-0.314,0.081-0.66,0.139-1.02,0.139c-0.581,0-1.196-0.153-1.759-0.617c0,0.017,0,0.033,0,0.051 c0,1.958,2.078,3.291,3.926,3.662c-0.375,0.221-1.131,0.243-1.5,0.243c-0.26,0-1.18-0.119-1.426-0.165 c0.514,1.605,2.368,2.507,4.135,2.539c-1.382,1.084-2.341,1.486-5.171,1.486H2C3.788,19.145,6.065,20,8.347,20 C15.777,20,20,14.337,20,8.999c0-0.086-0.002-0.266-0.005-0.447C19.995,8.534,20,8.517,20,8.499c0-0.027-0.008-0.053-0.008-0.08 c-0.003-0.136-0.006-0.263-0.009-0.329c0.79-0.57,1.475-1.281,2.017-2.091c-0.725,0.322-1.503,0.538-2.32,0.636 C20.514,6.135,21.699,4.943,22,3.999z" /></svg>
                     </a>
-                    <a href="#">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px" fill="white">    <path d="M 8 3 C 5.239 3 3 5.239 3 8 L 3 16 C 3 18.761 5.239 21 8 21 L 16 21 C 18.761 21 21 18.761 21 16 L 21 8 C 21 5.239 18.761 3 16 3 L 8 3 z M 18 5 C 18.552 5 19 5.448 19 6 C 19 6.552 18.552 7 18 7 C 17.448 7 17 6.552 17 6 C 17 5.448 17.448 5 18 5 z M 12 7 C 14.761 7 17 9.239 17 12 C 17 14.761 14.761 17 12 17 C 9.239 17 7 14.761 7 12 C 7 9.239 9.239 7 12 7 z M 12 9 A 3 3 0 0 0 9 12 A 3 3 0 0 0 12 15 A 3 3 0 0 0 15 12 A 3 3 0 0 0 12 9 z" /></svg>
-                    </a>
+                    <a href="#" className="ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0,0,256,256" width="24px" height="24px" fill-rule="nonzero"><g fill="#ffffff" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" ><g transform="scale(10.66667,10.66667)"><path d="M14,11.02c-0.52,0 -0.94,0.53 -0.94,1.18c0,0.65 0.42,1.18 0.94,1.18c0.52,0 0.94,-0.53 0.94,-1.18c0,-0.65 -0.42,-1.18 -0.94,-1.18zM10,11.02c-0.52,0 -0.94,0.53 -0.94,1.18c0,0.65 0.42,1.18 0.94,1.18c0.52,0 0.94,-0.53 0.94,-1.18c0,-0.65 -0.42,-1.18 -0.94,-1.18zM14,11.02c-0.52,0 -0.94,0.53 -0.94,1.18c0,0.65 0.42,1.18 0.94,1.18c0.52,0 0.94,-0.53 0.94,-1.18c0,-0.65 -0.42,-1.18 -0.94,-1.18zM10,11.02c-0.52,0 -0.94,0.53 -0.94,1.18c0,0.65 0.42,1.18 0.94,1.18c0.52,0 0.94,-0.53 0.94,-1.18c0,-0.65 -0.42,-1.18 -0.94,-1.18zM18,3h-12c-1.66,0 -3,1.34 -3,3v12c0,1.66 1.34,3 3,3h11l-0.38,-1.41l3.01,3.03c0.51,0.51 1.37,0.15 1.37,-0.56v-16.06c0,-1.66 -1.34,-3 -3,-3zM17.57,14.74c-1.37,1.25 -3.16,1.26 -3.16,1.26l-0.43,-0.58c0.44,-0.15 0.82,-0.35 1.21,-0.65l-0.09,-0.24c-0.72,0.33 -1.65,0.53 -3.1,0.53c-1.45,0 -2.38,-0.2 -3.1,-0.53l-0.09,0.24c0.39,0.3 0.77,0.5 1.21,0.65l-0.43,0.58c0,0 -1.79,-0.01 -3.16,-1.26c-0.22,-0.2 -0.31,-0.51 -0.29,-0.8c0.25,-2.89 1.14,-4.64 1.46,-5.18c0.07,-0.13 0.17,-0.23 0.29,-0.32c0.38,-0.25 1.33,-0.81 2.5,-0.93l0.3,0.61c0.43,-0.08 0.9,-0.14 1.31,-0.14c0.4,0 0.86,0.06 1.31,0.14l0.3,-0.61c1.12,0.09 2.11,0.67 2.5,0.93c0.12,0.09 0.22,0.19 0.29,0.32c0.32,0.55 1.21,2.29 1.46,5.18c0.02,0.29 -0.07,0.6 -0.29,0.8zM14,11.02c-0.52,0 -0.94,0.53 -0.94,1.18c0,0.65 0.42,1.18 0.94,1.18c0.52,0 0.94,-0.53 0.94,-1.18c0,-0.65 -0.42,-1.18 -0.94,-1.18zM10,11.02c-0.52,0 -0.94,0.53 -0.94,1.18c0,0.65 0.42,1.18 0.94,1.18c0.52,0 0.94,-0.53 0.94,-1.18c0,-0.65 -0.42,-1.18 -0.94,-1.18z"></path></g></g></svg>                    </a>
                 </div>
             </div>
             <div className="relative w-full h-full flex flex-col items-center justify-center">
-                <img
-                    src="/images/blur.jpeg"
-                    className="animate-pulse-slow absolute inset-auto block w-full min-h-screen object-cover"
-                />
                 <div className="flex flex-col items-center justify-center h-full w-full px-2 md:px-10">
 
-                    <div className="relative z-1 md:max-w-3xl w-full bg-gray-900/90 filter backdrop-blur-sm py-4 rounded-md px-2 md:px-10 flex flex-col items-center border-2 border-rose-600">
-                        <h1 className="text-6xl text-emerald-400">{isSaleActive ? 'PUBLIC SALE' : 'SALE NOT STARTED'}</h1>
+                    <div className="rounded-md border-4 border-rose-600">
+                        <div className="z-1 md:max-w-3xl w-full bg-opacity-50 bg-gray-900 filter backdrop-blur-sm py-4 px-2 md:px-10 flex flex-col items-center border-2 border-gray-500">
+                            <div className="flex flex-col md:flex-row md:space-x-14 w-full mt-10 mb-4 md:mt-8">
+                                <div className="relative w-full">
+                                    <div className="z-10 absolute top-2 left-2 opacity-80 filter text-base px-4 py-2 bg-black border border-brand-white rounded-md flex items-center justify-center text-white font-semibold">
+                                        <p>
+                                            <span className="text-white">{totalSupply}</span> /{' '}
+                                            {maxTokens}
+                                        </p>
+                                    </div>
 
-                        <h3 className="text-sm text-pink-200 tracking-widest">
-                            YOUR WALLET ADDRESS: {wallet?.length
-                                ? wallet[0].slice(0, 8) +
-                                '...' +
-                                wallet[0].slice(-4)
-                                : 'NONE'}
-                        </h3>
-
-
-                        <div className="flex flex-col md:flex-row md:space-x-14 w-full mt-10 md:mt-14">
-                            <div className="relative w-full">
-                                <div className="font-coiny z-10 absolute top-2 left-2 opacity-80 filter backdrop-blur-lg text-base px-4 py-2 bg-black border border-brand-purple rounded-md flex items-center justify-center text-white font-semibold">
-                                    <p>
-                                        <span className="text-white">{totalSupply}</span> /{' '}
-                                        {maxTokens}
-                                    </p>
+                                    <img
+                                        src="/images/NFT_IMAGE.png"
+                                        className="object-cover w-full rounded-md"
+                                    />
                                 </div>
 
-                                <img
-                                    src="/images/13.png"
-                                    className="object-cover w-full sm:h-[280px] md:w-[250px] rounded-md"
-                                />
-                            </div>
+                                <div className="flex flex-col items-center w-full px-4 mt-16 md:mt-0">
+                                    <div className="text-center">
+                                        <h1 className="text-6xl text-red-500">{isSaleActive ? 'PUBLIC SALE' : 'SALE NOT STARTED'}</h1>
 
-                            <div className="flex flex-col items-center w-full px-4 mt-16 md:mt-0">
-                                <div className="font-coiny flex items-center justify-between w-full">
-                                    <button
-                                        className="w-14 h-10 md:w-16 md:h-12 flex items-center justify-center text-brand-background hover:shadow-lg bg-gray-300 hover:bg-gray-100 font-bold rounded-md"
-                                        onClick={() => setNumTokensToMint(Math.min(remainingPerAccount, maxMintPerTx, numTokensToMint + 1))}
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-6 w-6 md:h-8 md:w-8"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
+                                        <h3 className="text-sm text-white-200 tracking-widest">
+                                            YOUR WALLET ADDRESS: {wallet?.length
+                                                ? wallet[0].slice(0, 8) +
+                                                '...' +
+                                                wallet[0].slice(-4)
+                                                : 'NONE'}
+                                        </h3>
+                                    </div>
+
+
+                                    <div className="flex items-center justify-between w-full">
+
+                                        <button
+                                            className="w-10 h-10 md:w-14 md:h-14 flex items-center justify-center gradient-box font-bold rounded-md"
+                                            onClick={() => setNumTokensToMint(Math.max(0, numTokensToMint - 1))}
                                         >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                                            />
-                                        </svg>
-                                    </button>
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-6 w-6 md:h-8 md:w-8"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M18 12H6"
+                                                />
+                                            </svg>
+                                        </button>
+                                        <p className="flex items-center justify-center flex-1 grow text-center font-bold text-brand-red text-3xl md:text-4xl">
+                                            {numTokensToMint}
+                                        </p>
+                                        <button
+                                            className="w-10 h-10 md:w-14 md:h-14 flex items-center justify-center font-bold rounded-md gradient-box"
+                                            onClick={() => setNumTokensToMint(Math.min(remainingPerAccount, maxMintPerTx, numTokensToMint + 1))}
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-6 w-6 md:h-8 md:w-8"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                                                />
+                                            </svg>
+                                        </button>
 
-                                    <p className="flex items-center justify-center flex-1 grow text-center font-bold text-brand-pink text-3xl md:text-4xl">
-                                        {numTokensToMint}
+                                    </div>
+
+                                    <p className="text-sm tracking-widest mt-3 uppercase">
+                                        Remaining Mint Amount: {remainingPerAccount} / {maxMintPerTx}
                                     </p>
 
-                                    <button
-                                        className="w-14 h-10 md:w-16 md:h-12 flex items-center justify-center text-brand-background hover:shadow-lg hover:bg-gray-100 bg-gray-300 font-bold rounded-md"
-                                        onClick={() => setNumTokensToMint(Math.max(0, numTokensToMint - 1))}
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-6 w-6 md:h-8 md:w-8"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M18 12H6"
-                                            />
-                                        </svg>
-                                    </button>
-                                </div>
+                                    <div className="mt-16 w-full">
+                                        <div className="w-full text-xl flex items-center justify-between uppercase">
+                                            <p>Total</p>
 
-                                <p className="text-sm text-pink-200 tracking-widest mt-3">
-                                    Remaining Mint Amount: {remainingPerAccount} / {maxMintPerTx}
-                                </p>
-
-                                <div className="border-t border-b py-4 mt-16 w-full">
-                                    <div className="w-full text-xl font-coiny flex items-center justify-between text-brand-yellow">
-                                        <p>Total</p>
-
-                                        <div className="flex items-center space-x-3">
-                                            <p>
-                                                {totalCost}{' '}
-                                                ETH
-                                            </p>{' '}
-                                            <span className="text-gray-400">+ GAS</span>
+                                            <div className="flex items-center space-x-3">
+                                                <p>
+                                                    {totalCost}{' '}
+                                                    ETH
+                                                </p>{' '}
+                                                <span className="text-gray-400">+ GAS</span>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    {/* Mint Button && Connect Wallet Button */}
+                                    {wallet && <button
+                                        className={` ${!isSaleActive
+                                            ? 'bg-red-500 cursor-not-allowed'
+                                            : 'bg-red-500 duration-150 from-brand-purple to-brand-red shadow-lg hover:shadow-red-400/20 hover:bg-red-700'
+                                            } mt-4 w-full px-6 py-3 rounded-md text-2xl text-white  mx-4 tracking-wide uppercase`}
+                                        disabled={!isSaleActive}
+                                        onClick={() => { handleMintTokens() }}
+                                    >
+                                        <p className="text-black">
+                                            Mint
+                                        </p>
+                                    </button>}
                                 </div>
 
-                                {/* Mint Button && Connect Wallet Button */}
-                                {wallet && <button
-                                    className={` ${!isSaleActive
-                                        ? 'bg-pink-500 cursor-not-allowed'
-                                        : 'bg-pink-500 duration-150 from-brand-purple to-brand-pink shadow-lg hover:shadow-pink-400/20 hover:bg-pink-700'
-                                        } font-coiny mt-12 w-full px-6 py-3 rounded-md text-2xl text-white  mx-4 tracking-wide uppercase`}
-                                    disabled={!isSaleActive}
-                                    onClick={() => { handleMintTokens() }}
-                                >
-                                    Mint
-                                </button>}
+
                             </div>
-
-
                         </div>
+
                     </div>
                 </div>
             </div>
