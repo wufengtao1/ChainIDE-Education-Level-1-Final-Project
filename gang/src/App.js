@@ -127,7 +127,6 @@ const NFT = () => {
     useEffect(() => {
         setInterval(() => {
             // polling every 5 seconds
-            console.log("Refreshing data...");
             fetchContractData();
         }, 1000 * 5);
     }, []);
