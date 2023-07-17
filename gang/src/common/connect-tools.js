@@ -1,15 +1,14 @@
-import { ethers } from "ethers";
-import detectEthereumProvider from "@metamask/detect-provider";
+import detectEthereumProvider from '@metamask/detect-provider';
 
 export const bscTestRpc = {
-  chainName: "bnbt",
-  chainId: "0x61",
+  chainName: 'bnbt',
+  chainId: '0x61',
   nativeCurrency: {
-    name: "BSC Testnet",
+    name: 'BSC Testnet',
     decimals: 18,
-    symbol: "BNB",
+    symbol: 'BNB'
   },
-  rpcUrls: ["https://data-seed-prebsc-1-s1.binance.org:8545/"],
+  rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/']
 };
 /**
  * connect to metamask
@@ -18,9 +17,10 @@ export const bscTestRpc = {
 export async function connectToMetaMask(callabck) {
   const provider = await detectEthereumProvider({ silent: true });
   if (provider) {
-    const accounts = await provider.request({ method: "eth_accounts" });
+    console.log(1);
+    const accounts = await provider.request({ method: 'eth_accounts' });
     callabck(accounts);
-    provider.once("accountsChanged", callabck);
+    provider.once('accountsChanged', callabck);
   }
 }
 export async function switchToBscTest(callback) {
@@ -28,19 +28,19 @@ export async function switchToBscTest(callback) {
   if (provider) {
     try {
       await window.ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: bscTestRpc.chainId }],
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: bscTestRpc.chainId }]
       });
     } catch (err) {
       // This error code indicates that the chain has not been added to MetaMask
       if (err.code === 4902) {
         await window.ethereum.request({
-          method: "wallet_addEthereumChain",
-          params: [bscTestRpc],
+          method: 'wallet_addEthereumChain',
+          params: [bscTestRpc]
         });
       }
     }
-    provider.once("chainChanged", callback);
+    provider.once('chainChanged', callback);
   }
 }
 
@@ -49,9 +49,9 @@ export async function bindAccountChangeOnce() {
     // Handle new accounts, or lack thereof.
   }
 
-  window.ethereum.on("accountsChanged", handleAccountsChanged);
+  window.ethereum.on('accountsChanged', handleAccountsChanged);
 
   // Later
 
-  window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
+  window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
 }
