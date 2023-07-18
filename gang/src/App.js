@@ -2,57 +2,24 @@ import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { ethers } from 'ethers';
 import { contractAddress, contractABI } from './common/constants.js';
 import { bscTestRpc, connectToMetaMask, switchToBscTest } from './common/connect-tools.js';
+import Loading from './components/Loading.jsx';
 
 const NFT = () => {
   /**
-   * collectionInfo:
-   * |-isSaleActive
-   * |-supply
-   * |-maxTokensValue
-   * |-maxMintPerAccountValue
-   * |-price
-   */
-  const [collectionInfo, setCollectionInfo] = useState({
-    isSaleActive: false,
-    supply: 0,
-    maxTokensValue: 0,
-    maxMintPerAccountValue: 0,
-    price: ethers.BigNumber.from(0)
-  });
-  const [myTokenInfo, setMyTokenInfo] = useState({ mintedAccount: 0 });
-  const [infoLoading, setInfoLoading] = useState(true);
-
-  /**
    * Fetch contract data
    */
-  const fetchContractData = useCallback(async () => {
-    try {
-      setInfoLoading(true);
-      const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = web3Provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, contractABI, signer);
-      const isSaleActive = await contract.isSaleActive();
-      const supply = await contract.totalSupply();
-      const maxTokensValue = await contract.MAX_TOKENS();
-      const maxMintPerAccountValue = await contract.MAX_MINT_PER_ACCOUNT();
-      const price = await contract.price();
-      setCollectionInfo({
-        isSaleActive,
-        supply: supply.toNumber(),
-        maxTokensValue: maxTokensValue.toNumber(),
-        maxMintPerAccountValue: maxMintPerAccountValue.toNumber(),
-        price: price
-      });
-
-      const myAddress = signer.getAddress();
-      const mintedAccount = await contract.getMintedCount(myAddress);
-      setMyTokenInfo({ mintedAccount });
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setInfoLoading(false);
-    }
-  }, []);
+  /**
+   * collectionInfo:
+   * |-isSaleActive boolean
+   * |-supply number
+   * |-maxTokensValue number
+   * |-maxMintPerAccountValue number
+   * |-price BigNumber
+   *
+   * myTokenInfo:
+   * |-mintedAccount number
+   */
+  const { collectionInfo, myTokenInfo, fetchContractData, infoLoading } = useFetchData();
 
   const startApp = useCallback(async () => {
     // 1. fetch contract Data
@@ -100,9 +67,9 @@ const NFT = () => {
   const [numsToMint, setNumsToMint] = useState(0);
   const addNums = useCallback(() => {
     setNumsToMint((num) => {
-      return Math.min(collectionInfo.maxMintPerTxValue, num + 1);
+      return Math.min(collectionInfo.maxMintPerAccount, num + 1);
     }); // @Todo: there's a issue here, maybe total
-  }, [collectionInfo.maxMintPerTxValue]);
+  }, [collectionInfo.maxMintPerAccount]);
   const minusNums = useCallback(() => {
     setNumsToMint((num) => Math.max(0, num - 1));
   }, []);
@@ -145,16 +112,15 @@ const NFT = () => {
    */
   const remainNumsForCurrent = useMemo(() => {
     const hasMinted = myTokenInfo.mintedAccount;
-    return Math.min(
-      collectionInfo.maxMintPerTxValue,
-      collectionInfo.maxMintPerAccountValue - hasMinted
-    );
-  }, [numsToMint]);
+    console.log(collectionInfo.maxMintPerAccount, collectionInfo.maxMintPerAccount, hasMinted);
+    return Math.min(collectionInfo.maxMintPerAccount, collectionInfo.maxMintPerAccount - hasMinted);
+  }, [numsToMint, myTokenInfo.mintedAccount]);
 
   return (
     <div
       className="min-h-screen h-full w-full overflow-hidden flex flex-col items-center justify-center background-image font-sans text-xl text-white duration-150"
       style={{ fontFamily: 'Do Hyeon' }}>
+      {infoLoading && <Loading />}
       <img
         alt="background"
         src="/images/BG_IMAGE.png"
@@ -288,7 +254,7 @@ const NFT = () => {
 
                   <p className="text-sm tracking-widest mt-3 uppercase">
                     Remaining Mint Amount: {remainNumsForCurrent} /{' '}
-                    {collectionInfo.maxMintPerTxValue}
+                    {collectionInfo.maxMintPerAccount}
                   </p>
 
                   <div className="mt-16 w-full">
@@ -342,3 +308,44 @@ const NFT = () => {
 };
 
 export default NFT;
+function useFetchData() {
+  const [collectionInfo, setCollectionInfo] = useState({
+    isSaleActive: false,
+    supply: 0,
+    maxTokensValue: 0,
+    maxMintPerAccount: 0,
+    price: ethers.BigNumber.from(0)
+  });
+  const [myTokenInfo, setMyTokenInfo] = useState({ mintedAccount: 0 });
+  const [infoLoading, setInfoLoading] = useState(true);
+  const fetchContractData = useCallback(async () => {
+    try {
+      setInfoLoading(true);
+      const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = web3Provider.getSigner();
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
+      const isSaleActive = await contract.isSaleActive();
+      const supply = await contract.totalSupply();
+      const maxTokensValue = await contract.MAX_TOKENS();
+      const maxMintPerAccount = await contract.MAX_MINT_PER_ACCOUNT();
+      const price = await contract.price();
+      setCollectionInfo({
+        isSaleActive,
+        supply: supply.toNumber(),
+        maxTokensValue: maxTokensValue.toNumber(),
+        maxMintPerAccount: maxMintPerAccount.toNumber(),
+        price: price
+      });
+
+      const myAddress = signer.getAddress();
+      const mintedAccount = await contract.getMintedCount(myAddress);
+      setMyTokenInfo({ mintedAccount });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setInfoLoading(false);
+    }
+  }, []);
+
+  return { collectionInfo, myTokenInfo, infoLoading, fetchContractData };
+}

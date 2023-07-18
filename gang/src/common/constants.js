@@ -1,28 +1,13 @@
 // Smart contract address and ABI
-export const contractAddress = '0xA6ffF8DFF0b421EA87b5F747d860bD9EC58b0195';
+export const contractAddress = '0xd1951f08D97442d4f17C0a6951785B0051db598f';
 export const contractABI = [
   { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'owner',
-        type: 'address'
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'approved',
-        type: 'address'
-      },
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256'
-      }
+      { indexed: true, internalType: 'address', name: 'owner', type: 'address' },
+      { indexed: true, internalType: 'address', name: 'approved', type: 'address' },
+      { indexed: true, internalType: 'uint256', name: 'tokenId', type: 'uint256' }
     ],
     name: 'Approval',
     type: 'event'
@@ -30,18 +15,8 @@ export const contractABI = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'owner',
-        type: 'address'
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'operator',
-        type: 'address'
-      },
+      { indexed: true, internalType: 'address', name: 'owner', type: 'address' },
+      { indexed: true, internalType: 'address', name: 'operator', type: 'address' },
       { indexed: false, internalType: 'bool', name: 'approved', type: 'bool' }
     ],
     name: 'ApprovalForAll',
@@ -50,18 +25,8 @@ export const contractABI = [
   {
     anonymous: false,
     inputs: [
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'previousOwner',
-        type: 'address'
-      },
-      {
-        indexed: true,
-        internalType: 'address',
-        name: 'newOwner',
-        type: 'address'
-      }
+      { indexed: true, internalType: 'address', name: 'previousOwner', type: 'address' },
+      { indexed: true, internalType: 'address', name: 'newOwner', type: 'address' }
     ],
     name: 'OwnershipTransferred',
     type: 'event'
@@ -71,19 +36,14 @@ export const contractABI = [
     inputs: [
       { indexed: true, internalType: 'address', name: 'from', type: 'address' },
       { indexed: true, internalType: 'address', name: 'to', type: 'address' },
-      {
-        indexed: true,
-        internalType: 'uint256',
-        name: 'tokenId',
-        type: 'uint256'
-      }
+      { indexed: true, internalType: 'uint256', name: 'tokenId', type: 'uint256' }
     ],
     name: 'Transfer',
     type: 'event'
   },
   {
     inputs: [],
-    name: 'MAX_MINT_PER_TX',
+    name: 'MAX_MINT_PER_ACCOUNT',
     outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     stateMutability: 'view',
     type: 'function'
@@ -299,11 +259,5 @@ export const contractABI = [
     stateMutability: 'nonpayable',
     type: 'function'
   },
-  {
-    inputs: [],
-    name: 'withdrawAll',
-    outputs: [],
-    stateMutability: 'payable',
-    type: 'function'
-  }
+  { inputs: [], name: 'withdrawAll', outputs: [], stateMutability: 'payable', type: 'function' }
 ];

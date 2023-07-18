@@ -43,15 +43,3 @@ export async function switchToBscTest(callback) {
     provider.once('chainChanged', callback);
   }
 }
-
-export async function bindAccountChangeOnce() {
-  function handleAccountsChanged(accounts) {
-    // Handle new accounts, or lack thereof.
-  }
-
-  window.ethereum.on('accountsChanged', handleAccountsChanged);
-
-  // Later
-
-  window.ethereum.removeListener('accountsChanged', handleAccountsChanged);
-}
