@@ -8,29 +8,39 @@ import { useFetchData } from './common/useFetchData.js';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+function reloadPage() {
+  window.location.reload();
+}
+
 const NFT = () => {
   /**
    * Fetch contract data hook
    */
   const { collectionInfo, myTokenInfo, fetchContractData, infoLoading } = useFetchData();
 
-  // connect metamask =======================
+  // connect metamask and init fetch data =======================
   const [accounts, setAccounts] = useState([]);
-  const [connecting, setConnecting] = useState(true);
+  const [connecting, setConnecting] = useState(false);
   useEffect(() => {
-    const connect = async () => {
+    const initApp = async () => {
       try {
+        // 1. connect account
+        setConnecting(true);
         const accounts = await connectToMetaMask();
         setAccounts(accounts);
         window.ethereum.on('accountsChanged', setAccounts);
+
+        // 2. check and switch chain
         const currentChainId = await window.ethereum.request({
           method: 'eth_chainId'
         });
         if (currentChainId !== bscTestRpc.chainId) {
           await switchToBscTest();
         }
-        window.ethereum.on('chainChanged', window.location.reload);
+        window.ethereum.on('chainChanged', reloadPage);
         setConnecting(false);
+
+        // 3. init fetch data
         await fetchContractData();
       } catch (e) {
         setConnecting(false);
@@ -39,21 +49,22 @@ const NFT = () => {
       }
     };
 
-    connect();
+    initApp();
 
     return () => {
       window.ethereum?.removeListener('accountsChanged', setAccounts);
-      window.ethereum?.removeListener('chainChanged', window.location.reload);
+      window.ethereum?.removeListener('chainChanged', reloadPage);
     };
   }, [fetchContractData]);
+  // connect metamask and init fetch data end =======================
 
+  // numsToMint control
   const [numsToMint, setNumsToMint] = useState(0);
   const addNums = useCallback(() => {
     setNumsToMint((num) => {
       return Math.min(collectionInfo.maxMintPerAccount, num + 1);
-    }); // @Todo: there's a issue here, maybe more than total
+    }); // @Todo: there's a issue here, maybe more than total, not a big problem
   }, [collectionInfo.maxMintPerAccount]);
-
   const minusNums = useCallback(() => {
     setNumsToMint((num) => Math.max(0, num - 1));
   }, []);
@@ -92,6 +103,9 @@ const NFT = () => {
     }
   }, [numsToMint, collectionInfo.price, fetchContractData]);
 
+  /**
+   * Calculation of current address showing
+   */
   const currentWalletAddress = useMemo(() => {
     if (accounts && accounts.length) {
       return accounts[0].slice(0, 8) + '...' + accounts[0].slice(-4);
@@ -264,7 +278,6 @@ const NFT = () => {
                   <div className="mt-16 w-full">
                     <div className="w-full text-xl flex items-center justify-between uppercase">
                       <p>Total</p>
-
                       <div className="flex items-center space-x-3">
                         <p>{totalCost} ETH</p> <span className="text-gray-400">+ GAS</span>
                       </div>
