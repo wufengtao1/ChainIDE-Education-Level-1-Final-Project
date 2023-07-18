@@ -94,7 +94,7 @@ const NFT = () => {
         setNumsToMint(0);
       } catch (e) {
         console.log(e);
-        toast.error(resolveRevertMessage(e.message));
+        toast.error(resolveRevertMessage(e));
       } finally {
         setMinting(false);
       }
@@ -327,7 +327,11 @@ const NFT = () => {
 
 export default NFT;
 
-function resolveRevertMessage(message) {
+function resolveRevertMessage(e) {
+  const message = e.message;
+  if (e.code === -32603) {
+    return e.data.message;
+  }
   const revertReg = /reason="(.*?)"/;
   if (message.match(revertReg)) {
     return message.match(revertReg)[1];
