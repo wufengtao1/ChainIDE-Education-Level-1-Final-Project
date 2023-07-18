@@ -22,12 +22,14 @@ const NFT = () => {
       try {
         const accounts = await connectToMetaMask();
         setAccounts(accounts);
+        window.ethereum.on('accountsChanged', setAccounts);
         const currentChainId = await window.ethereum.request({
           method: 'eth_chainId'
         });
         if (currentChainId !== bscTestRpc.chainId) {
           await switchToBscTest();
         }
+        window.ethereum.on('chainChanged', window.location.reload);
         setConnecting(false);
         await fetchContractData();
       } catch (e) {
@@ -38,6 +40,11 @@ const NFT = () => {
     };
 
     connect();
+
+    return () => {
+      window.ethereum?.removeListener('accountsChanged', setAccounts);
+      window.ethereum?.removeListener('chainChanged', window.location.reload);
+    };
   }, [fetchContractData]);
 
   const [numsToMint, setNumsToMint] = useState(0);
@@ -71,6 +78,7 @@ const NFT = () => {
           gasLimit: gas.mul(13).div(10)
         });
         await tx.wait();
+        toast.success('Congratulations! you mint succeed!');
         await fetchContractData();
         setNumsToMint(0);
       } catch (e) {
