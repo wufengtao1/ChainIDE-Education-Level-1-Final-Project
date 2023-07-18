@@ -1,9 +1,11 @@
 import React from 'react';
-const Loading = () => {
+
+import { PropTypes } from 'prop-types';
+const Loading = ({ text }) => {
   return (
     <div className="absolute bg-black bg-opacity-60 z-10 h-full w-full flex items-center justify-center">
       <div className="flex items-center">
-        <span className="text-3xl mr-4">Fetching data</span>
+        <span className="text-3xl mr-4">{text}</span>
         <svg
           className="animate-spin h-8 w-8 text-white-800"
           xmlns="http://www.w3.org/2000/svg"
@@ -23,5 +25,9 @@ const Loading = () => {
       </div>
     </div>
   );
+};
+
+Loading.propTypes = {
+  text: PropTypes.string.isRequired
 };
 export default Loading;

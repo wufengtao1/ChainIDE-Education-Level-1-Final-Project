@@ -1,84 +1,60 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { ethers } from 'ethers';
 import { contractAddress, contractABI } from './common/constants.js';
-import { bscTestRpc, connectToMetaMask, switchToBscTest } from './common/connect-tools.js';
+import { bscTestRpc, connectToMetaMask, switchToBscTest } from './common/connectTools.js';
 import Loading from './components/Loading.jsx';
+import { useFetchData } from './common/useFetchData.js';
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const NFT = () => {
   /**
-   * Fetch contract data
-   */
-  /**
-   * collectionInfo:
-   * |-isSaleActive boolean
-   * |-supply number
-   * |-maxTokensValue number
-   * |-maxMintPerAccountValue number
-   * |-price BigNumber
-   *
-   * myTokenInfo:
-   * |-mintedAccount number
+   * Fetch contract data hook
    */
   const { collectionInfo, myTokenInfo, fetchContractData, infoLoading } = useFetchData();
 
-  const startApp = useCallback(async () => {
-    // 1. fetch contract Data
-    await fetchContractData();
-  }, [fetchContractData]);
-
-  // ============================== connect steps =================
-  /**
-   * Step 1. Connect to MetaMask set accounts to account state
-   */
+  // connect metamask =======================
   const [accounts, setAccounts] = useState([]);
+  const [connecting, setConnecting] = useState(true);
   useEffect(() => {
-    connectToMetaMask(setAccounts);
-  }, []);
-
-  /**
-   * Step 2. when the accounts not null, check current network, and switch
-   * at the last, start app
-   */
-  const [currentNetworkId, setCurrentNetworkId] = useState();
-  useEffect(() => {
-    const checkAndSwitch = async () => {
-      const currentChainId = await window.ethereum.request({
-        method: 'eth_chainId'
-      });
-      setCurrentNetworkId(currentChainId);
-      if (currentChainId === bscTestRpc.chainId) {
-        // start app immde
-        startApp();
-      } else {
-        switchToBscTest(() => {
-          // after network changed startApp
-          setCurrentNetworkId(bscTestRpc.chainId);
-          startApp();
-        }).catch((e) => {
-          alert('please accept switch to bsc testnet, then refresh!');
+    const connect = async () => {
+      try {
+        const accounts = await connectToMetaMask();
+        setAccounts(accounts);
+        const currentChainId = await window.ethereum.request({
+          method: 'eth_chainId'
         });
+        if (currentChainId !== bscTestRpc.chainId) {
+          await switchToBscTest();
+        }
+        setConnecting(false);
+        await fetchContractData();
+      } catch (e) {
+        setConnecting(false);
+        console.log(e);
+        toast.error(e.message);
       }
     };
-    if (accounts && accounts.length) {
-      checkAndSwitch();
-    }
-  }, [accounts, startApp]);
+
+    connect();
+  }, [fetchContractData]);
 
   const [numsToMint, setNumsToMint] = useState(0);
   const addNums = useCallback(() => {
     setNumsToMint((num) => {
       return Math.min(collectionInfo.maxMintPerAccount, num + 1);
-    }); // @Todo: there's a issue here, maybe total
+    }); // @Todo: there's a issue here, maybe more than total
   }, [collectionInfo.maxMintPerAccount]);
+
   const minusNums = useCallback(() => {
     setNumsToMint((num) => Math.max(0, num - 1));
   }, []);
 
-  const [minting, setMinting] = useState(false);
-
   /**
    * Call Mint function in contract
    */
+  const [minting, setMinting] = useState(false);
   const handleMintTokens = useCallback(async () => {
     if (numsToMint > 0) {
       const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
@@ -86,18 +62,34 @@ const NFT = () => {
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
       try {
-        setMinting(true);
-        const tx = await contract.mint(numsToMint, {
+        const gas = await contract.estimateGas.mint(numsToMint, {
           value: collectionInfo.price.mul(numsToMint)
         });
-        await tx.wait(1);
+        setMinting(true);
+        const tx = await contract.mint(numsToMint, {
+          value: collectionInfo.price.mul(numsToMint),
+          gasLimit: gas.mul(13).div(10)
+        });
+        await tx.wait();
+        await fetchContractData();
+        setNumsToMint(0);
       } catch (e) {
         console.log(e);
+        toast.error(resolveRevertMessage(e.message));
       } finally {
         setMinting(false);
       }
+    } else {
+      toast.warning('please add mint nums!');
     }
-  }, [numsToMint]);
+  }, [numsToMint, collectionInfo.price, fetchContractData]);
+
+  const currentWalletAddress = useMemo(() => {
+    if (accounts && accounts.length) {
+      return accounts[0].slice(0, 8) + '...' + accounts[0].slice(-4);
+    }
+    return 'NONE';
+  }, [accounts]);
 
   /**
    * Calculation of total price
@@ -105,22 +97,29 @@ const NFT = () => {
   const totalCost = useMemo(() => {
     const total = collectionInfo.price.mul(numsToMint);
     return ethers.utils.formatEther(total);
-  }, [numsToMint]);
+  }, [numsToMint, collectionInfo.price]);
 
   /**
-   * Calculation of total price
+   * Calculation of remain nums
    */
   const remainNumsForCurrent = useMemo(() => {
     const hasMinted = myTokenInfo.mintedAccount;
-    console.log(collectionInfo.maxMintPerAccount, collectionInfo.maxMintPerAccount, hasMinted);
     return Math.min(collectionInfo.maxMintPerAccount, collectionInfo.maxMintPerAccount - hasMinted);
-  }, [numsToMint, myTokenInfo.mintedAccount]);
+  }, [myTokenInfo.mintedAccount, collectionInfo.maxMintPerAccount]);
+
+  /**
+   * mint status
+   */
+  const canMint = useMemo(() => {
+    return collectionInfo.isSaleActive && remainNumsForCurrent > 0 && !minting && !infoLoading;
+  }, [collectionInfo.isSaleActive, remainNumsForCurrent, minting, infoLoading]);
 
   return (
     <div
       className="min-h-screen h-full w-full overflow-hidden flex flex-col items-center justify-center background-image font-sans text-xl text-white duration-150"
       style={{ fontFamily: 'Do Hyeon' }}>
-      {infoLoading && <Loading />}
+      {connecting && <Loading text="Connecting Metamask..." />}
+      {infoLoading && <Loading text="Loading Data..." />}
       <img
         alt="background"
         src="/images/BG_IMAGE.png"
@@ -205,10 +204,7 @@ const NFT = () => {
                     </h1>
 
                     <h3 className="text-sm text-white-200 tracking-widest">
-                      YOUR WALLET ADDRESS:{' '}
-                      {accounts.length
-                        ? accounts[0].slice(0, 8) + '...' + accounts[0].slice(-4)
-                        : 'NONE'}
+                      YOUR WALLET ADDRESS: {currentWalletAddress}
                     </h3>
                   </div>
 
@@ -271,11 +267,11 @@ const NFT = () => {
                   {accounts && (
                     <button
                       className={` ${
-                        !collectionInfo.isSaleActive || numsToMint === 0 || minting
-                          ? 'bg-red-500 cursor-not-allowed'
+                        !canMint
+                          ? 'bg-red-300 cursor-not-allowed'
                           : 'bg-red-500 duration-150 from-brand-purple to-brand-red shadow-lg hover:shadow-red-400/20 hover:bg-red-700'
                       } mt-4 w-full px-6 py-3 rounded-md text-2xl text-white  mx-4 tracking-wide uppercase`}
-                      disabled={!collectionInfo.isSaleActive || numsToMint === 0 || minting}
+                      disabled={!canMint}
                       onClick={handleMintTokens}>
                       {minting && (
                         <svg
@@ -303,49 +299,19 @@ const NFT = () => {
           </div>
         </div>
       </div>
+      <ToastContainer theme="dark" />
     </div>
   );
 };
 
 export default NFT;
-function useFetchData() {
-  const [collectionInfo, setCollectionInfo] = useState({
-    isSaleActive: false,
-    supply: 0,
-    maxTokensValue: 0,
-    maxMintPerAccount: 0,
-    price: ethers.BigNumber.from(0)
-  });
-  const [myTokenInfo, setMyTokenInfo] = useState({ mintedAccount: 0 });
-  const [infoLoading, setInfoLoading] = useState(true);
-  const fetchContractData = useCallback(async () => {
-    try {
-      setInfoLoading(true);
-      const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = web3Provider.getSigner();
-      const contract = new ethers.Contract(contractAddress, contractABI, signer);
-      const isSaleActive = await contract.isSaleActive();
-      const supply = await contract.totalSupply();
-      const maxTokensValue = await contract.MAX_TOKENS();
-      const maxMintPerAccount = await contract.MAX_MINT_PER_ACCOUNT();
-      const price = await contract.price();
-      setCollectionInfo({
-        isSaleActive,
-        supply: supply.toNumber(),
-        maxTokensValue: maxTokensValue.toNumber(),
-        maxMintPerAccount: maxMintPerAccount.toNumber(),
-        price: price
-      });
 
-      const myAddress = signer.getAddress();
-      const mintedAccount = await contract.getMintedCount(myAddress);
-      setMyTokenInfo({ mintedAccount });
-    } catch (e) {
-      console.log(e);
-    } finally {
-      setInfoLoading(false);
-    }
-  }, []);
-
-  return { collectionInfo, myTokenInfo, infoLoading, fetchContractData };
+function resolveRevertMessage(message) {
+  const revertReg = /reason="(.*?)"/;
+  if (message.match(revertReg)) {
+    return message.match(revertReg)[1];
+  } else if (message.indexOf('user rejected transaction') > -1) {
+    return 'Error: user rejected transaction!';
+  }
+  return message;
 }

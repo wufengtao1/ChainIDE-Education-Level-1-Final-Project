@@ -1,4 +1,5 @@
 import detectEthereumProvider from '@metamask/detect-provider';
+import { toast } from 'react-toastify';
 
 export const bscTestRpc = {
   chainName: 'bnbt',
@@ -12,19 +13,22 @@ export const bscTestRpc = {
 };
 /**
  * connect to metamask
- * @param {*} callabck after connected call this with accounts params
  */
-export async function connectToMetaMask(callabck) {
-  const provider = await detectEthereumProvider({ silent: true });
+export async function connectToMetaMask() {
+  const provider = await detectEthereumProvider();
   if (provider) {
-    console.log(1);
-    const accounts = await provider.request({ method: 'eth_accounts' });
-    callabck(accounts);
-    provider.once('accountsChanged', callabck);
+    try {
+      return await window.ethereum.request({
+        method: 'eth_requestAccounts'
+      });
+    } catch (e) {
+      console.log(e);
+      toast.error(e);
+    }
   }
 }
-export async function switchToBscTest(callback) {
-  const provider = await detectEthereumProvider({ silent: true });
+export async function switchToBscTest() {
+  const provider = await detectEthereumProvider();
   if (provider) {
     try {
       await window.ethereum.request({
@@ -40,6 +44,5 @@ export async function switchToBscTest(callback) {
         });
       }
     }
-    provider.once('chainChanged', callback);
   }
 }
