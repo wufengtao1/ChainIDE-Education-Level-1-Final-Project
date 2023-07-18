@@ -6,17 +6,17 @@ import { bscTestRpc, connectToMetaMask, switchToBscTest } from './common/connect
 const NFT = () => {
   /**
    * collectionInfo:
-   * |-saleActive
+   * |-isSaleActive
    * |-supply
    * |-maxTokensValue
-   * |-maxMintPerTxValue
+   * |-maxMintPerAccountValue
    * |-price
    */
   const [collectionInfo, setCollectionInfo] = useState({
-    saleActive: false,
+    isSaleActive: false,
     supply: 0,
     maxTokensValue: 0,
-    maxMintPerTxValue: 0,
+    maxMintPerAccountValue: 0,
     price: ethers.BigNumber.from(0)
   });
   const [myTokenInfo, setMyTokenInfo] = useState({ mintedAccount: 0 });
@@ -31,17 +31,17 @@ const NFT = () => {
       const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = web3Provider.getSigner();
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
-      const saleActive = await contract.isSaleActive();
+      const isSaleActive = await contract.isSaleActive();
       const supply = await contract.totalSupply();
       const maxTokensValue = await contract.MAX_TOKENS();
-      const maxMintPerTxValue = await contract.MAX_MINT_PER_TX();
-      const priceVal = await contract.price();
+      const maxMintPerAccountValue = await contract.MAX_MINT_PER_ACCOUNT();
+      const price = await contract.price();
       setCollectionInfo({
-        saleActive,
+        isSaleActive,
         supply: supply.toNumber(),
         maxTokensValue: maxTokensValue.toNumber(),
-        maxMintPerTxValue: maxMintPerTxValue.toNumber(),
-        priceVal: priceVal
+        maxMintPerAccountValue: maxMintPerAccountValue.toNumber(),
+        price: price
       });
 
       const myAddress = signer.getAddress();
@@ -55,7 +55,7 @@ const NFT = () => {
   }, []);
 
   const startApp = useCallback(async () => {
-    // 1. fetch contrcat Data
+    // 1. fetch contract Data
     await fetchContractData();
   }, [fetchContractData]);
 
@@ -72,20 +72,20 @@ const NFT = () => {
    * Step 2. when the accounts not null, check current network, and switch
    * at the last, start app
    */
-  const [currentNetworkId, setCourrentnetworkId] = useState();
+  const [currentNetworkId, setCurrentNetworkId] = useState();
   useEffect(() => {
     const checkAndSwitch = async () => {
       const currentChainId = await window.ethereum.request({
         method: 'eth_chainId'
       });
-      setCourrentnetworkId(currentChainId);
+      setCurrentNetworkId(currentChainId);
       if (currentChainId === bscTestRpc.chainId) {
         // start app immde
         startApp();
       } else {
         switchToBscTest(() => {
           // after network changed startApp
-          setCourrentnetworkId(bscTestRpc.chainId);
+          setCurrentNetworkId(bscTestRpc.chainId);
           startApp();
         }).catch((e) => {
           alert('please accept switch to bsc testnet, then refresh!');
@@ -107,13 +107,6 @@ const NFT = () => {
     setNumsToMint((num) => Math.max(0, num - 1));
   }, []);
 
-  /**
-   * Calculation of total price
-   */
-  const totalCost = useMemo(() => {
-    return numsToMint * collectionInfo.priceVal;
-  }, [numsToMint]);
-
   const [minting, setMinting] = useState(false);
 
   /**
@@ -121,21 +114,41 @@ const NFT = () => {
    */
   const handleMintTokens = useCallback(async () => {
     if (numsToMint > 0) {
-      const web3Provider = new ethers.providers.Wedb3Provider(window.ethereum);
+      const web3Provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = web3Provider.getSigner();
       const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
       try {
         setMinting(true);
+        const tx = await contract.mint(numsToMint, {
+          value: collectionInfo.price.mul(numsToMint)
+        });
+        await tx.wait(1);
       } catch (e) {
         console.log(e);
+      } finally {
+        setMinting(false);
       }
-
-      const tx = await contract.mint(numsToMint, {
-        value: collectionInfo.price.mul(numsToMint)
-      });
-      await tx.wait(1);
     }
+  }, [numsToMint]);
+
+  /**
+   * Calculation of total price
+   */
+  const totalCost = useMemo(() => {
+    const total = collectionInfo.price.mul(numsToMint);
+    return ethers.utils.formatEther(total);
+  }, [numsToMint]);
+
+  /**
+   * Calculation of total price
+   */
+  const remainNumsForCurrent = useMemo(() => {
+    const hasMinted = myTokenInfo.mintedAccount;
+    return Math.min(
+      collectionInfo.maxMintPerTxValue,
+      collectionInfo.maxMintPerAccountValue - hasMinted
+    );
   }, [numsToMint]);
 
   return (
@@ -274,8 +287,8 @@ const NFT = () => {
                   </div>
 
                   <p className="text-sm tracking-widest mt-3 uppercase">
-                    {/* Remaining Mint Amount: {remainingPerAccount} /{" "} */}
-                    {collectionInfo.maxMintPerTx}
+                    Remaining Mint Amount: {remainNumsForCurrent} /{' '}
+                    {collectionInfo.maxMintPerTxValue}
                   </p>
 
                   <div className="mt-16 w-full">
@@ -292,13 +305,30 @@ const NFT = () => {
                   {accounts && (
                     <button
                       className={` ${
-                        !collectionInfo.isSaleActive
+                        !collectionInfo.isSaleActive || numsToMint === 0 || minting
                           ? 'bg-red-500 cursor-not-allowed'
                           : 'bg-red-500 duration-150 from-brand-purple to-brand-red shadow-lg hover:shadow-red-400/20 hover:bg-red-700'
                       } mt-4 w-full px-6 py-3 rounded-md text-2xl text-white  mx-4 tracking-wide uppercase`}
-                      disabled={!collectionInfo.isSaleActive}
+                      disabled={!collectionInfo.isSaleActive || numsToMint === 0 || minting}
                       onClick={handleMintTokens}>
-                      <p className="text-black">Mint</p>
+                      {minting && (
+                        <svg
+                          aria-hidden="true"
+                          className="inline w-6 h-6 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-gray-600 dark:fill-gray-300"
+                          viewBox="0 0 100 101"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg">
+                          <path
+                            d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                            fill="currentColor"
+                          />
+                          <path
+                            d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                            fill="currentFill"
+                          />
+                        </svg>
+                      )}
+                      <span className="text-black">Mint</span>
                     </button>
                   )}
                 </div>

@@ -12,7 +12,7 @@ contract NFT is ERC721, Ownable {
     uint public constant MAX_TOKENS = 32;
     uint private constant TOKENS_RESERVED = 0;
     uint public price = 1000000000000000;
-    uint256 public constant MAX_MINT_PER_TX = 2;
+    uint256 public constant MAX_MINT_PER_ACCOUNT = 2;
 
     bool public isSaleActive;
     uint256 public totalSupply;
@@ -36,7 +36,7 @@ contract NFT is ERC721, Ownable {
             "You can only mint 1 or 2 tokens at a time."
         );
         require(
-            mintedPerWallet[msg.sender] + _numTokens <= MAX_MINT_PER_TX,
+            mintedPerWallet[msg.sender] + _numTokens <= MAX_MINT_PER_ACCOUNT,
             "You cannot mint that many total."
         );
         uint256 curTotalSupply = totalSupply;
