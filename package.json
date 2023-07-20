@@ -5,5 +5,8 @@
   },
   "devDependencies": {
     "eslint": "^8.45.0"
+  },
+  "scripts": {
+    "build": "[React] build --output public"
   }
 }
