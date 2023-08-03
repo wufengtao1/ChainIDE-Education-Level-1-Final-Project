@@ -17,6 +17,7 @@ IPFS link for the Metadata (baseUri): ipfs://bafybeiefb7s245y7wrtxkfg323xreayjxk
 
 - cd ChainIDE-Education-Level-1-Final-Project
 - cd gang
-- npm start
+- yarn
+- yarn start
 
 
