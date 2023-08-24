@@ -12,7 +12,7 @@ contract NFT is ERC721, Ownable {
     uint public constant MAX_TOKENS = 32; // Maximum number of tokens that can be minted
     uint private constant TOKENS_RESERVED = 0; // Number of tokens reserved for special purposes
     uint public price = 1000000000000000; // Price in wei to mint each token
-    uint256 public constant MAX_MINT_PER_ACCOUNT = 2; // Maximum number of tokens that can be minted per transaction
+    uint256 public constant MAX_MINT_PER_ACCOUNT = 2; // Maximum number of tokens that can be minted per address
 
     bool public isSaleActive; // Flag to indicate if the sale is active
     uint256 public totalSupply; // Total number of tokens minted
