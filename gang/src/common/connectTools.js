@@ -1,15 +1,16 @@
 import detectEthereumProvider from '@metamask/detect-provider';
 import { toast } from 'react-toastify';
 
-export const bscTestRpc = {
-  chainName: 'bnbt',
-  chainId: '0x61',
+export const TestRpc = {
+  chainName: 'Mumbai',
+  chainId: '0x13881',
   nativeCurrency: {
-    name: 'BSC Testnet',
+    name: 'MATIC',
     decimals: 18,
-    symbol: 'BNB'
+    symbol: 'MATIC'
   },
-  rpcUrls: ['https://data-seed-prebsc-1-s1.binance.org:8545/']
+  rpcUrls: ['https://rpc-mumbai.maticvigil.com'],
+  blockExplorerUrls: ['https://mumbai.polygonscan.com']
 };
 /**
  * connect to metamask
@@ -27,20 +28,20 @@ export async function connectToMetaMask() {
     }
   }
 }
-export async function switchToBscTest() {
+export async function switchToTest() {
   const provider = await detectEthereumProvider();
   if (provider) {
     try {
       await window.ethereum.request({
         method: 'wallet_switchEthereumChain',
-        params: [{ chainId: bscTestRpc.chainId }]
+        params: [{ chainId: TestRpc.chainId }]
       });
     } catch (err) {
       // This error code indicates that the chain has not been added to MetaMask
       if (err.code === 4902) {
         await window.ethereum.request({
           method: 'wallet_addEthereumChain',
-          params: [bscTestRpc]
+          params: [TestRpc]
         });
       }
     }

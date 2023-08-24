@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { ethers } from 'ethers';
 import { contractAddress, contractABI } from './common/constants.js';
-import { bscTestRpc, connectToMetaMask, switchToBscTest } from './common/connectTools.js';
+import { TestRpc, connectToMetaMask, switchToTest } from './common/connectTools.js';
 import Loading from './components/Loading.jsx';
 import { useFetchData } from './common/useFetchData.js';
 
@@ -34,8 +34,8 @@ const NFT = () => {
         const currentChainId = await window.ethereum.request({
           method: 'eth_chainId'
         });
-        if (currentChainId !== bscTestRpc.chainId) {
-          await switchToBscTest();
+        if (currentChainId !== TestRpc.chainId) {
+          await switchToTest();
         }
         window.ethereum.on('chainChanged', reloadPage);
         setConnecting(false);

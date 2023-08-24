@@ -2,10 +2,10 @@
 
 Projects code for the dApps taught to develop in ChainIDE Education
 
-1. Gang
+1. gang
    The front-end for the smart contract in React
 
-2. Backend
+2. contract
    contains the smart contract for the application [Gang Club]
 
 
