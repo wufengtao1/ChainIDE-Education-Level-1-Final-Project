@@ -3,10 +3,12 @@
 Projects code for the dApps taught to develop in ChainIDE Education
 
 1. gang
+   
    The front-end for the smart contract in React
 
-2. contract
-   contains the smart contract for the application [Gang Club]
+3. contract
+   
+   Contains the smart contract for the application [Gang Club]
 
 
 The contract has been deployed on the BNB Chain Test network.
