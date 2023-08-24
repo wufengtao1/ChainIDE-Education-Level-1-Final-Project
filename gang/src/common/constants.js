@@ -1,5 +1,5 @@
 // Smart contract address and ABI
-export const contractAddress = '0x17996c7423C7298037481aA1314D21405C5EEF56';
+export const contractAddress = '0x036a69bEA1db48AE69bA6A03333266530787eC3d';
 export const contractABI = [
   { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
   {
